@@ -1,0 +1,69 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="specflow.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="specflow.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- test project dependencies (MsTest) -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
+
+    <!-- SpecFlow -->
+    <PackageReference Include="SpecFlow.MsTest" Version="3.9.74" />
+
+    <!-- CucumberExpressions support for SpecFlow -->
+    <PackageReference Include="SpecFlow" Version="3.9.74" />
+    <PackageReference Include="CucumberExpressions.SpecFlow.3-9" Version="1.0.7" />
+
+    <!-- SpecFlow+ LivingDoc -->
+    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
+
+    <!-- packages for testing ASP.NET Core Apps -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.6" />
+
+    <!-- testing utilities -->
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="**\.gitkeep" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ReqOverflow.Specs.Controller\Drivers\QuestionMother.cs" Link="Drivers\QuestionMother.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\StepDefinitions\QuestionDataStepDefinitions.cs" Link="StepDefinitions\QuestionDataStepDefinitions.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\ActionAttempt.cs" Link="Support\ActionAttempt.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\CurrentTimeProvider.cs" Link="Support\CurrentTimeProvider.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\DatabaseHooks.cs" Link="Support\DatabaseHooks.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\Data\AnswerData.cs" Link="Support\Data\AnswerData.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\Data\QuestionData.cs" Link="Support\Data\QuestionData.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\DomainDefaults.cs" Link="Support\DomainDefaults.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\ErrorMessageProvider.cs" Link="Support\ErrorMessageProvider.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\QuestionContext.cs" Link="Support\QuestionContext.cs" />
+    <Compile Include="..\ReqOverflow.Specs.Controller\Support\TestLogger.cs" Link="Support\TestLogger.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReqOverflow.Web\ReqOverflow.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Support\Data\" />
+  </ItemGroup>
+
+</Project>
