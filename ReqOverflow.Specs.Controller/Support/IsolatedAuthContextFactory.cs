@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using BoDi;
 using ReqOverflow.Specs.Support;
-using TechTalk.SpecFlow.Infrastructure;
+using Reqnroll.Infrastructure;
 
 namespace ReqOverflow.Specs.Controller.Support
 {

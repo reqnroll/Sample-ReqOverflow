@@ -1,7 +1,7 @@
 using System;
 using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
-using TechTalk.SpecFlow.Assist.ValueComparers;
+using Reqnroll.Assist;
+using Reqnroll.Assist.ValueComparers;
 
 // ReSharper disable once CheckNamespace
 namespace ReqOverflow.Specs.Support

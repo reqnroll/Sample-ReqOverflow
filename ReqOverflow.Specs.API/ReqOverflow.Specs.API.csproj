@@ -22,15 +22,9 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.2.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
 
-    <!-- SpecFlow -->
-    <PackageReference Include="SpecFlow.MsTest" Version="3.9.74" />
-
-    <!-- CucumberExpressions support for SpecFlow -->
-    <PackageReference Include="SpecFlow" Version="3.9.74" />
-    <PackageReference Include="CucumberExpressions.SpecFlow.3-9" Version="1.0.7" />
-
-    <!-- SpecFlow+ LivingDoc -->
-    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
+    <!-- Reqnroll -->
+    <PackageReference Include="Reqnroll.MsTest" Version="1.0.0" />
+    <PackageReference Include="Reqnroll.SpecFlowCompatibility" Version="1.0.0" />
 
     <!-- packages for testing ASP.NET Core Apps -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.6" />

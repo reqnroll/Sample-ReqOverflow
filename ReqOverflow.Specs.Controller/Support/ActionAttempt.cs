@@ -2,7 +2,7 @@ using System;
 using BoDi;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using TechTalk.SpecFlow.Infrastructure;
+using Reqnroll.Infrastructure;
 
 // ReSharper disable once CheckNamespace
 namespace ReqOverflow.Specs.Support
