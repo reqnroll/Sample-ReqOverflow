@@ -1,5 +1,5 @@
 using ReqOverflow.Web.DataAccess;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 // ReSharper disable once CheckNamespace
 namespace ReqOverflow.Specs.Support

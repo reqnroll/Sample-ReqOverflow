@@ -4,8 +4,8 @@ using FluentAssertions;
 using ReqOverflow.Specs.Controller.Drivers;
 using ReqOverflow.Specs.Support;
 using ReqOverflow.Specs.Support.Data;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
+using Reqnroll.Assist;
 
 namespace ReqOverflow.Specs.Controller.StepDefinitions
 {

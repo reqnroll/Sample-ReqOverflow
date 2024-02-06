@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using ReqOverflow.Specs.Drivers;
 using ReqOverflow.Specs.Support;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
+using Reqnroll.Assist;
 
 // ReSharper disable once CheckNamespace
 namespace ReqOverflow.Specs.StepDefinitions

@@ -5,7 +5,7 @@ using ReqOverflow.Specs.API.Support;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReqOverflow.Specs.Support;
 using ReqOverflow.Web.Models;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace ReqOverflow.Specs.API.StepDefinitions
 {

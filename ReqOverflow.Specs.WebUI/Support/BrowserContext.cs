@@ -5,7 +5,7 @@ using System.Text;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace ReqOverflow.Specs.WebUI.Support
 {

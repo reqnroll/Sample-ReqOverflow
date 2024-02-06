@@ -1,7 +1,7 @@
 using System;
 using ReqOverflow.Specs.Controller.Drivers;
 using ReqOverflow.Web.Models;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace ReqOverflow.Specs.Controller.StepDefinitions
 {

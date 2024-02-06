@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ReqOverflow.Web.Models;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 // ReSharper disable once CheckNamespace
 namespace ReqOverflow.Specs.Support

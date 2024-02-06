@@ -24,7 +24,6 @@
 
     <!-- Reqnroll -->
     <PackageReference Include="Reqnroll.MsTest" Version="1.0.0" />
-    <PackageReference Include="Reqnroll.SpecFlowCompatibility" Version="1.0.0" />
 
     <!-- packages for testing ASP.NET Core Apps -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.6" />

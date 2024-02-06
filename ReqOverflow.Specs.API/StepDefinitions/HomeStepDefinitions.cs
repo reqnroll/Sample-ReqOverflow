@@ -6,8 +6,8 @@ using ReqOverflow.Specs.API.Support;
 using ReqOverflow.Web.Models;
 using ReqOverflow.Specs.Support;
 using ReqOverflow.Specs.Support.Data;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
+using Reqnroll.Assist;
 
 namespace ReqOverflow.Specs.API.StepDefinitions
 {

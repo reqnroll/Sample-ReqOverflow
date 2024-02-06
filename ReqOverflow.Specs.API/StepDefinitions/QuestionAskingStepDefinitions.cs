@@ -3,8 +3,8 @@ using ReqOverflow.Specs.API.Drivers;
 using ReqOverflow.Specs.Support;
 using ReqOverflow.Specs.Support.Data;
 using ReqOverflow.Web.Models;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
+using Reqnroll.Assist;
 
 namespace ReqOverflow.Specs.API.StepDefinitions
 {

@@ -4,7 +4,7 @@ using ReqOverflow.Web.Models;
 using ReqOverflow.Specs.Controller.Support;
 using ReqOverflow.Specs.Controller.Drivers;
 using ReqOverflow.Specs.Support;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace ReqOverflow.Specs.Controller.StepDefinitions
 {

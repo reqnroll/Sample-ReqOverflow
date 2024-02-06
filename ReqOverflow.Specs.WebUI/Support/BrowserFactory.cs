@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using BoDi;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using TechTalk.SpecFlow;
+using Reqnroll;
 
 namespace ReqOverflow.Specs.WebUI.Support
 {
