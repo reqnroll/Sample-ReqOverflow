@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="specflow.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="specflow.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- test project dependencies (MsTest) -->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
