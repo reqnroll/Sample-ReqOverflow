@@ -162,7 +162,7 @@ namespace ReqOverflow.Web.DataAccess
         {
             private static readonly object LockObj = new object();
 
-            private readonly string _databaseFilePath = Environment.ExpandEnvironmentVariables(@"%TMP%\ReqOverflowDb.json");
+            private readonly string _databaseFilePath = Path.Combine(Path.GetTempPath(), @"ReqOverflowDb.json");
 
             public void SaveToFile(string json)
             {
