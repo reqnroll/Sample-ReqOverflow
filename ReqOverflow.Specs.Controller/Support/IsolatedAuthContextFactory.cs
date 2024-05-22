@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BoDi;
+using Reqnroll.BoDi;
 using ReqOverflow.Specs.Support;
 using Reqnroll.Infrastructure;
 

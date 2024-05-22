@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Concurrent;
-using BoDi;
+using Reqnroll.BoDi;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Reqnroll;
@@ -40,7 +39,7 @@ namespace ReqOverflow.Specs.WebUI.Support
 
         public BrowserFactory(ScenarioContext scenarioContext)
         {
-            // creating browser per test-thread (requires TestThreadContainerDisposer below)
+            // creating browser per test-thread
             _browserObjectContainer = scenarioContext.ScenarioContainer.Resolve<TestThreadContext>().TestThreadContainer;
             // creating browser per feature
             //_browserObjectContainer = scenarioContext.ScenarioContainer.Resolve<FeatureContext>().FeatureContainer;
@@ -54,32 +53,5 @@ namespace ReqOverflow.Specs.WebUI.Support
                 _browserCreated = _browserObjectContainer.Resolve<BrowserInstance>().GetWebDriver();
             return _browserCreated;
         }
-
-        #region TestThreadContainerDisposer
-
-        [Binding]
-        public class TestThreadContainerDisposer
-        {
-            private static readonly ConcurrentBag<IObjectContainer> TestThreadContainers = new();
-
-            [BeforeScenario(Order = -1)]
-            public void EnsureTestThreadContainerRegistered(ScenarioContext scenarioContext)
-            {
-                var testThreadContainer = scenarioContext.ScenarioContainer.Resolve<TestThreadContext>().TestThreadContainer;
-                TestThreadContainers.Add(testThreadContainer);
-            }
-
-            [AfterTestRun]
-            public static void DisposeTestThreadContainers()
-            {
-                var containers = TestThreadContainers.ToArray();
-                foreach (var container in containers)
-                {
-                    container.Dispose();
-                }
-            }
-        }
-
-        #endregion
     }
 }
