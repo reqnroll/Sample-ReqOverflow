@@ -24,29 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="**\.gitkeep" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\ReqOverflow.Specs.Controller\Drivers\QuestionMother.cs" Link="Drivers\QuestionMother.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\StepDefinitions\QuestionDataStepDefinitions.cs" Link="StepDefinitions\QuestionDataStepDefinitions.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\ActionAttempt.cs" Link="Support\ActionAttempt.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\CurrentTimeProvider.cs" Link="Support\CurrentTimeProvider.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\DatabaseHooks.cs" Link="Support\DatabaseHooks.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\Data\AnswerData.cs" Link="Support\Data\AnswerData.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\Data\QuestionData.cs" Link="Support\Data\QuestionData.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\DomainDefaults.cs" Link="Support\DomainDefaults.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\ErrorMessageProvider.cs" Link="Support\ErrorMessageProvider.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\QuestionContext.cs" Link="Support\QuestionContext.cs" />
-    <Compile Include="..\ReqOverflow.Specs.Controller\Support\TestLogger.cs" Link="Support\TestLogger.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ReqOverflow.Web\ReqOverflow.Web.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Support\Data\" />
   </ItemGroup>
 
 </Project>
