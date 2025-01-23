@@ -8,15 +8,15 @@
 
   <ItemGroup>
     <!-- test project dependencies (MsTest) -->
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.2" />
 
     <!-- Reqnroll -->
-    <PackageReference Include="Reqnroll.MsTest" Version="2.0.3" />
+    <PackageReference Include="Reqnroll.MsTest" Version="2.2.1" />
 
     <!-- testing utilities -->
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FluentAssertions" Version="7.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
