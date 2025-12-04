@@ -9,7 +9,7 @@ namespace ReqOverflow.Specs.Support
     public static class DomainDefaults
     {
         public const string UserName = "Marvin";
-        public const string UserPassword = "1234";
+        public const string UserPassword = "r)pF0*50oBs4";
 
         public const string AltUserName = "Ford";
         public const string AltUserPassword = "1423";
