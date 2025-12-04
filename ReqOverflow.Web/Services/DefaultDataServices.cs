@@ -11,7 +11,7 @@ namespace ReqOverflow.Web.Services
     public static class DefaultDataServices
     {
         public const string DefaultUserName = "Marvin";
-        public const string DefaultPassword = "1234";
+        public const string DefaultPassword = "r)pF0*50oBs4";
 
         public const string AltUserName = "Ford";
         public const string AltUserPassword = "1423";
