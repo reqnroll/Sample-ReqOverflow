@@ -58,7 +58,7 @@ namespace ReqOverflow.Tests
         [TestMethod]
         public void ToQuestionDetails_should_get_user_reference()
         {
-            var user = new User {Name = "XY", Password = "1234"};
+            var user = new User {Name = "XY", Password = "r)pF0*50oBs4"};
             _dataContext.Users.Add(user);
             var question = CreateBaseQuestion();
             question.AskedBy = user.Id;
@@ -106,7 +106,7 @@ namespace ReqOverflow.Tests
         [TestMethod]
         public void ToQuestionSummary_should_get_user_reference()
         {
-            var user = new User {Name = "XY", Password = "1234"};
+            var user = new User {Name = "XY", Password = "r)pF0*50oBs4"};
             _dataContext.Users.Add(user);
             var question = CreateBaseQuestion();
             question.AskedBy = user.Id;
@@ -149,7 +149,7 @@ namespace ReqOverflow.Tests
         [TestMethod]
         public void ToAnswerDetails_should_get_user_reference()
         {
-            var user = new User {Name = "XY", Password = "1234"};
+            var user = new User {Name = "XY", Password = "r)pF0*50oBs4"};
             _dataContext.Users.Add(user);
             var answer = new Answer { Content = "Content1", AnsweredBy = user.Id };
             var sut = new ModelTransformationService(_dataContext);
@@ -163,7 +163,7 @@ namespace ReqOverflow.Tests
         [TestMethod]
         public void ToUserReference_should_get_user_id_and_name()
         {
-            var user = new User {Name = "XY", Password = "1234"};
+            var user = new User {Name = "XY", Password = "r)pF0*50oBs4"};
             var sut = new ModelTransformationService(_dataContext);
 
             var result = sut.ToUserReference(user);
