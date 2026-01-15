@@ -1,21 +1,12 @@
-using System;
 using ReqOverflow.Specs.API.Support;
 using ReqOverflow.Web.Models;
 
-namespace ReqOverflow.Specs.API.Drivers
+namespace ReqOverflow.Specs.API.Drivers;
+
+public class HomeApiDriver(WebApiContext webApiContext)
 {
-    public class HomeApiDriver
+    public HomePageModel GetHomePageModel()
     {
-        private readonly WebApiContext _webApiContext;
-
-        public HomeApiDriver(WebApiContext webApiContext)
-        {
-            _webApiContext = webApiContext;
-        }
-
-        public HomePageModel GetHomePageModel()
-        {
-            return _webApiContext.ExecuteGet<HomePageModel>("/api/home");
-        }
+        return webApiContext.ExecuteGet<HomePageModel>("/api/home");
     }
 }

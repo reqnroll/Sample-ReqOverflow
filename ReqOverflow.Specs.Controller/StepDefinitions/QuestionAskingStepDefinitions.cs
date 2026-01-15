@@ -1,63 +1,54 @@
-using System;
 using ReqOverflow.Specs.Controller.Drivers;
 using ReqOverflow.Specs.Support;
 using ReqOverflow.Specs.Support.Data;
 using ReqOverflow.Web.Models;
 using Reqnroll;
-using Reqnroll.Assist;
 
-namespace ReqOverflow.Specs.Controller.StepDefinitions
+namespace ReqOverflow.Specs.Controller.StepDefinitions;
+
+[Binding]
+public class QuestionAskingStepDefinitions(
+    AskQuestionDriver askQuestionDriver,
+    QuestionDetailsPageDriver questionDetailsPageDriver)
 {
-    [Binding]
-    public class QuestionAskingStepDefinitions
+    private Table _askQuestionSpecification;
+
+    [When("the user asks a question as")]
+    public void WhenTheUserAsksAQuestionAs(Table questionTable)
     {
-        private readonly AskQuestionDriver _askQuestionDriver;
-        private readonly QuestionDetailsPageDriver _questionDetailsPageDriver;
-        private Table _askQuestionSpecification;
+        _askQuestionSpecification = questionTable;
+        var question = questionTable.CreateInstance(DomainDefaults.GetDefaultAskInput);
+        var result = askQuestionDriver.Perform(question);
+        questionDetailsPageDriver.LoadPage(result.Id);
+    }
 
-        public QuestionAskingStepDefinitions(AskQuestionDriver askQuestionDriver, QuestionDetailsPageDriver questionDetailsPageDriver)
-        {
-            _askQuestionDriver = askQuestionDriver;
-            _questionDetailsPageDriver = questionDetailsPageDriver;
-        }
+    [When("the user attempts to ask a question")]
+    public void WhenTheUserAttemptsToAskAQuestion()
+    {
+        askQuestionDriver.Perform(DomainDefaults.GetDefaultAskInput(), true);
+    }
 
-        [When("the user asks a question as")]
-        public void WhenTheUserAsksAQuestionAs(Table questionTable)
-        {
-            _askQuestionSpecification = questionTable;
-            var question = questionTable.CreateInstance(DomainDefaults.GetDefaultAskInput);
-            var result = _askQuestionDriver.Perform(question);
-            _questionDetailsPageDriver.LoadPage(result.Id);
-        }
+    [When("the user attempts to ask a question as")]
+    public void WhenTheUserAttemptsToAskAQuestionAs(AskInputModel askedQuestion)
+    {
+        askQuestionDriver.Perform(askedQuestion, true);
+    }
 
-        [When("the user attempts to ask a question")]
-        public void WhenTheUserAttemptsToAskAQuestion()
-        {
-            _askQuestionDriver.Perform(DomainDefaults.GetDefaultAskInput(), true);
-        }
+    [Then("the question should be posted as above")]
+    public void ThenTheQuestionShouldBePostedAsAbove()
+    {
+        _askQuestionSpecification.CompareToInstance(questionDetailsPageDriver.PageContent.ToQuestionData());
+    }
 
-        [When("the user attempts to ask a question as")]
-        public void WhenTheUserAttemptsToAskAQuestionAs(AskInputModel askedQuestion)
-        {
-            _askQuestionDriver.Perform(askedQuestion, true);
-        }
+    [Then("the question meta data should be")]
+    public void ThenTheQuestionMetaDataShouldBe(Table expectedQuestionMetaDataTable)
+    {
+        expectedQuestionMetaDataTable.CompareToInstance(questionDetailsPageDriver.PageContent.ToQuestionData());
+    }
 
-        [Then("the question should be posted as above")]
-        public void ThenTheQuestionShouldBePostedAsAbove()
-        {
-            _askQuestionSpecification.CompareToInstance(_questionDetailsPageDriver.PageContent.ToQuestionData());
-        }
-
-        [Then("the question meta data should be")]
-        public void ThenTheQuestionMetaDataShouldBe(Table expectedQuestionMetaDataTable)
-        {
-            expectedQuestionMetaDataTable.CompareToInstance(_questionDetailsPageDriver.PageContent.ToQuestionData());
-        }
-
-        [Then("the ask attempt should fail with error {string}")]
-        public void ThenTheAskAttemptShouldFailWithError(string expectedErrorMessageKey)
-        {
-            _askQuestionDriver.ShouldFailWithError(expectedErrorMessageKey);
-        }
+    [Then("the ask attempt should fail with error {string}")]
+    public void ThenTheAskAttemptShouldFailWithError(string expectedErrorMessageKey)
+    {
+        askQuestionDriver.ShouldFailWithError(expectedErrorMessageKey);
     }
 }

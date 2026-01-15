@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace ReqOverflow.Specs.Controller.Drivers
+namespace ReqOverflow.Specs.Controller.Drivers;
+
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
+public enum VoteDirection
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public enum VoteDirection
-    {
-        Up = 1,
-        Down = -1
-    }
+    Up = 1,
+    Down = -1
 }

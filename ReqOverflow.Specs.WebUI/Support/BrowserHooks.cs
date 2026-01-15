@@ -1,30 +1,17 @@
-using System;
 using Reqnroll;
 
-namespace ReqOverflow.Specs.WebUI.Support
+namespace ReqOverflow.Specs.WebUI.Support;
+
+[Binding]
+public class BrowserHooks(BrowserContext browserContext, TestFolders testFolders, ScenarioContext scenarioContext)
 {
-    [Binding]
-    public class BrowserHooks
+    [AfterScenario("@web", Order = 1)]
+    public void HandleWebErrors()
     {
-        private readonly BrowserContext _browserContext;
-        private readonly TestFolders _testFolders;
-        private readonly ScenarioContext _scenarioContext;
-
-        public BrowserHooks(BrowserContext browserContext, TestFolders testFolders, ScenarioContext scenarioContext)
+        if (scenarioContext.TestError != null && browserContext.IsDriverCreated)
         {
-            _browserContext = browserContext;
-            _testFolders = testFolders;
-            _scenarioContext = scenarioContext;
-        }
-
-        [AfterScenario("@web", Order = 1)]
-        public void HandleWebErrors()
-        {
-            if (_scenarioContext.TestError != null && _browserContext.IsDriverCreated)
-            {
-                var fileName = _testFolders.GetScenarioSpecificFileName();
-                _browserContext.TakeScreenshot(_testFolders.OutputFolder, fileName);
-            }
+            var fileName = testFolders.GetScenarioSpecificFileName();
+            browserContext.TakeScreenshot(testFolders.OutputFolder, fileName);
         }
     }
 }

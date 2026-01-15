@@ -1,52 +1,43 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentAssertions;
+using AwesomeAssertions;
 using ReqOverflow.Specs.Support;
 using ReqOverflow.Specs.Support.Data;
 using ReqOverflow.Web.Controllers;
 using ReqOverflow.Web.Models;
 using Reqnroll;
-using Reqnroll.Assist;
 
-namespace ReqOverflow.Specs.Controller.StepDefinitions
+namespace ReqOverflow.Specs.Controller.StepDefinitions;
+
+[Binding]
+public class QuestionListStepDefinitions(QuestionContext questionContext)
 {
-    [Binding]
-    public class QuestionListStepDefinitions
+    private List<QuestionSummaryModel> _questions;
+
+    [When("the user checks the questions page")]
+    public void WhenTheUserChecksTheQuestionsPage()
     {
-        private readonly QuestionContext _questionContext;
-        private List<QuestionSummaryModel> _questions;
+        var controller = new QuestionController();
+        _questions = controller.GetQuestions();
+    }
 
-        public QuestionListStepDefinitions(QuestionContext questionContext)
-        {
-            _questionContext = questionContext;
-        }
+    [Then("the question should be listed among the questions as above")]
+    public void ThenTheQuestionShouldBeListedAmongTheQuestionsAsAbove()
+    {
+        var question = _questions.FirstOrDefault(q => q.Title == questionContext.CurrentQuestion.Title);
+        question.Should().NotBeNull();
+        questionContext.QuestionSpecification.CompareToInstance(question.ToQuestionData());
+    }
 
-        [When("the user checks the questions page")]
-        public void WhenTheUserChecksTheQuestionsPage()
-        {
-            var controller = new QuestionController();
-            _questions = controller.GetQuestions();
-        }
+    [Then("the questions list should contain {int} questions")]
+    public void ThenTheQuestionsListShouldContainQuestions(int expectedCount)
+    {
+        _questions.Should().HaveCount(expectedCount);
+    }
 
-        [Then("the question should be listed among the questions as above")]
-        public void ThenTheQuestionShouldBeListedAmongTheQuestionsAsAbove()
-        {
-            var question = _questions.FirstOrDefault(q => q.Title == _questionContext.CurrentQuestion.Title);
-            question.Should().NotBeNull();
-            _questionContext.QuestionSpecification.CompareToInstance(question.ToQuestionData());
-        }
-
-        [Then("the questions list should contain {int} questions")]
-        public void ThenTheQuestionsListShouldContainQuestions(int expectedCount)
-        {
-            _questions.Should().HaveCount(expectedCount);
-        }
-
-        [Then("the question list should be ordered descending by ask date")]
-        public void ThenTheQuestionListShouldBeOrderedDescendingByAskDate()
-        {
-            _questions.Should().BeInDescendingOrder(q => q.AskedAt);
-        }
+    [Then("the question list should be ordered descending by ask date")]
+    public void ThenTheQuestionListShouldBeOrderedDescendingByAskDate()
+    {
+        _questions.Should().BeInDescendingOrder(q => q.AskedAt);
     }
 }

@@ -5,146 +5,138 @@ using System.Text;
 using Newtonsoft.Json;
 using ReqOverflow.Web.Utils;
 
-namespace ReqOverflow.Specs.API.Support
+namespace ReqOverflow.Specs.API.Support;
+
+public class WebApiContext(AppHostingContext appHostingContext) : IDisposable
 {
-    public class WebApiContext : IDisposable
+    private readonly StringBuilder _log = new();
+
+    private HttpClient _httpClient;
+
+    public HttpClient HttpClient
     {
-        private readonly AppHostingContext _appHostingContext;
-        private readonly StringBuilder _log = new();
-
-        private HttpClient _httpClient;
-
-        public HttpClient HttpClient
+        get
         {
-            get
-            {
-                if (_httpClient == null)
-                    _httpClient = _appHostingContext.CreateClient();
-                return _httpClient;
-            }
+            _httpClient ??= appHostingContext.CreateClient();
+            return _httpClient;
         }
+    }
 
-        public WebApiContext(AppHostingContext appHostingContext)
+    public void Dispose()
+    {
+        if (_httpClient != null)
         {
-            _appHostingContext = appHostingContext;
+            _httpClient.Dispose();
+            _httpClient = null;
         }
+    }
 
-        public void Dispose()
+    public TData ExecuteGet<TData>(string endpoint)
+    {
+        // execute request
+        // (we need to use the same HttpClient otherwise the auth token cookie gets lost)
+        var response = HttpClient.GetAsync(endpoint).Result;
+
+        SanityCheck(response);
+
+        // deserialize response data
+        var content = ReadContent(response);
+        LogResponse(response, content);
+
+        return JsonConvert.DeserializeObject<TData>(content);
+    }
+
+    public WebApiResponse<TData> ExecutePost<TData>(string endpoint, object data)
+    {
+        return ExecuteSend<TData>(endpoint, data, HttpMethod.Post);
+    }
+
+    public WebApiResponse ExecutePost(string endpoint, object data)
+    {
+        return ExecuteSend<string>(endpoint, data, HttpMethod.Post);
+    }
+
+    public WebApiResponse ExecutePut(string endpoint, object data)
+    {
+        return ExecuteSend<string>(endpoint, data, HttpMethod.Put);
+    }
+
+    private WebApiResponse<TData> ExecuteSend<TData>(string endpoint, object data, HttpMethod httpMethod)
+    {
+        // execute request
+        var requestContent = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+        var response = HttpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint)
         {
-            if (_httpClient != null)
-            {
-                _httpClient.Dispose();
-                _httpClient = null;
-            }
-        }
+            Content = requestContent
+        }).Result;
+        LogResponse(response);
 
-        public TData ExecuteGet<TData>(string endpoint)
+        // for post requests the 2xx, 3xx and 4xx status codes are all "valid" results
+        SanityCheck(response, 500);
+
+        Console.WriteLine(GetResponseMessage(response));
+
+        var responseContent = ReadContent(response);
+        TData responseData = default(TData);
+        if ((int) response.StatusCode >= 200 && (int) response.StatusCode < 300)
+            responseData = typeof(TData) == typeof(string)
+                ? (TData) (object) responseContent
+                : JsonConvert.DeserializeObject<TData>(responseContent);
+
+        return new WebApiResponse<TData>
         {
-            // execute request
-            // (we need to use the same HttpClient otherwise the auth token cookie gets lost)
-            var response = HttpClient.GetAsync(endpoint).Result;
+            StatusCode = response.StatusCode,
+            ResponseMessage = GetResponseMessage(response),
+            ResponseData = responseData
+        };
+    }
 
-            SanityCheck(response);
-
-            // deserialize response data
-            var content = ReadContent(response);
-            LogResponse(response, content);
-
-            return JsonConvert.DeserializeObject<TData>(content);
-        }
-
-        public WebApiResponse<TData> ExecutePost<TData>(string endpoint, object data)
+    private string ReadContent(HttpResponseMessage response)
+    {
+        try
         {
-            return ExecuteSend<TData>(endpoint, data, HttpMethod.Post);
+            return response.Content.ReadAsStringAsync().Result;
         }
-
-        public WebApiResponse ExecutePost(string endpoint, object data)
+        catch
         {
-            return ExecuteSend<string>(endpoint, data, HttpMethod.Post);
+            return null;
         }
+    }
 
-        public WebApiResponse ExecutePut(string endpoint, object data)
+    // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
+    private void SanityCheck(HttpResponseMessage response, int upperRange = 300)
+    {
+        if ((int) response.StatusCode < 200 || (int) response.StatusCode >= upperRange)
         {
-            return ExecuteSend<string>(endpoint, data, HttpMethod.Put);
+            var responseMessage = GetResponseMessage(response);
+            throw new HttpResponseException(response.StatusCode, responseMessage,
+                $"The Web API request should be completed with success, not with error '{responseMessage}'");
         }
+    }
 
-        private WebApiResponse<TData> ExecuteSend<TData>(string endpoint, object data, HttpMethod httpMethod)
-        {
-            // execute request
-            var requestContent = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
-            var response = HttpClient.SendAsync(new HttpRequestMessage(httpMethod, endpoint)
-            {
-                Content = requestContent
-            }).Result;
-            LogResponse(response);
+    private string GetResponseMessage(HttpResponseMessage response)
+    {
+        if (response == null)
+            return null;
 
-            // for post requests the 2xx, 3xx and 4xx status codes are all "valid" results
-            SanityCheck(response, 500);
+        var content = ReadContent(response);
+        return $"{response.StatusCode}: {content ?? response.ReasonPhrase}";
+    }
 
-            Console.WriteLine(GetResponseMessage(response));
+    private void LogResponse(HttpResponseMessage response, string content = null)
+    {
+        _log.AppendLine(response.RequestMessage?.RequestUri?.ToString());
+        _log.AppendLine($"{response.StatusCode}: {response.ReasonPhrase}");
+        content ??= ReadContent(response);
+        if (content != null)
+            _log.AppendLine(content);
+        _log.AppendLine();
+    }
 
-            var responseContent = ReadContent(response);
-            TData responseData = default(TData);
-            if ((int) response.StatusCode >= 200 && (int) response.StatusCode < 300)
-                responseData = typeof(TData) == typeof(string)
-                    ? (TData) (object) responseContent
-                    : JsonConvert.DeserializeObject<TData>(responseContent);
-
-            return new WebApiResponse<TData>
-            {
-                StatusCode = response.StatusCode,
-                ResponseMessage = GetResponseMessage(response),
-                ResponseData = responseData
-            };
-        }
-
-        private string ReadContent(HttpResponseMessage response)
-        {
-            try
-            {
-                return response.Content.ReadAsStringAsync().Result;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-        private void SanityCheck(HttpResponseMessage response, int upperRange = 300)
-        {
-            if ((int) response.StatusCode < 200 || (int) response.StatusCode >= upperRange)
-            {
-                var responseMessage = GetResponseMessage(response);
-                throw new HttpResponseException(response.StatusCode, responseMessage,
-                    $"The Web API request should be completed with success, not with error '{responseMessage}'");
-            }
-        }
-
-        private string GetResponseMessage(HttpResponseMessage response)
-        {
-            if (response == null)
-                return null;
-
-            var content = ReadContent(response);
-            return $"{response.StatusCode}: {content ?? response.ReasonPhrase}";
-        }
-
-        private void LogResponse(HttpResponseMessage response, string content = null)
-        {
-            _log.AppendLine(response.RequestMessage.RequestUri.ToString());
-            _log.AppendLine($"{response.StatusCode}: {response.ReasonPhrase}");
-            content ??= ReadContent(response);
-            if (content != null)
-                _log.AppendLine(content);
-            _log.AppendLine();
-        }
-
-        public void SaveLog(string outputFolder, string fileName)
-        {
-            var logFilePath = Path.Combine(outputFolder, fileName);
-            Console.WriteLine($"Saving log to {logFilePath}");
-            File.WriteAllText(logFilePath, _log.ToString());
-        }
+    public void SaveLog(string outputFolder, string fileName)
+    {
+        var logFilePath = Path.Combine(outputFolder, fileName);
+        Console.WriteLine($"Saving log to {logFilePath}");
+        File.WriteAllText(logFilePath, _log.ToString());
     }
 }

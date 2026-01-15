@@ -1,45 +1,35 @@
-using System;
 using ReqOverflow.Specs.Controller.Drivers;
 using ReqOverflow.Web.Models;
 using Reqnroll;
-using Reqnroll.Assist;
 
-namespace ReqOverflow.Specs.Controller.StepDefinitions
+namespace ReqOverflow.Specs.Controller.StepDefinitions;
+
+[Binding]
+public class QuestionAnsweringStepDefinitions(PostAnswerDriver postAnswer)
 {
-    [Binding]
-    public class QuestionAnsweringStepDefinitions
+    [When("the user answers the question as")]
+    public void WhenTheUserAnswersTheQuestionAs(Table answerTable)
     {
-        private readonly PostAnswerDriver _postAnswer;
+        var answer = answerTable.CreateInstance<AnswerInputModel>();
+        postAnswer.Perform(answer);
+    }
 
-        public QuestionAnsweringStepDefinitions(PostAnswerDriver postAnswer)
-        {
-            _postAnswer = postAnswer;
-        }
+    [When("the user attempts to answer the question")]
+    public void WhenTheUserAttemptsToAnswerTheQuestion()
+    {
+        postAnswer.Perform(new AnswerInputModel {Content = "Sample content"}, true);
+    }
 
-        [When("the user answers the question as")]
-        public void WhenTheUserAnswersTheQuestionAs(Table answerTable)
-        {
-            var answer = answerTable.CreateInstance<AnswerInputModel>();
-            _postAnswer.Perform(answer);
-        }
+    [When("the user attempts to answer the question as")]
+    public void WhenTheUserAttemptsToAnswerTheQuestionAs(Table answerTable)
+    {
+        var answer = answerTable.CreateInstance<AnswerInputModel>();
+        postAnswer.Perform(answer, true);
+    }
 
-        [When("the user attempts to answer the question")]
-        public void WhenTheUserAttemptsToAnswerTheQuestion()
-        {
-            _postAnswer.Perform(new AnswerInputModel {Content = "Sample content"}, true);
-        }
-
-        [When("the user attempts to answer the question as")]
-        public void WhenTheUserAttemptsToAnswerTheQuestionAs(Table answerTable)
-        {
-            var answer = answerTable.CreateInstance<AnswerInputModel>();
-            _postAnswer.Perform(answer, true);
-        }
-
-        [Then("the answer attempt should fail with error {string}")]
-        public void ThenTheAnswerAttemptShouldFailWithError(string expectedErrorMessageKey)
-        {
-            _postAnswer.ShouldFailWithError(expectedErrorMessageKey);
-        }
+    [Then("the answer attempt should fail with error {string}")]
+    public void ThenTheAnswerAttemptShouldFailWithError(string expectedErrorMessageKey)
+    {
+        postAnswer.ShouldFailWithError(expectedErrorMessageKey);
     }
 }

@@ -4,38 +4,30 @@ using ReqOverflow.Specs.Support;
 using ReqOverflow.Specs.WebUI.Support;
 using ReqOverflow.Web.Models;
 
-namespace ReqOverflow.Specs.WebUI.Drivers
+namespace ReqOverflow.Specs.WebUI.Drivers;
+
+public class LoginPageDriver(BrowserContext browserContext) : ActionAttempt<LoginInputModel, string>
 {
-    public class LoginPageDriver : ActionAttempt<LoginInputModel, string>
+    private const string PageUrl = "/Login";
+    private IWebElement Name => browserContext.Driver.FindElement(By.Id("Name"));
+    private IWebElement Password => browserContext.Driver.FindElement(By.Id("Password"));
+    private IWebElement LoginButton => browserContext.Driver.FindElement(By.Id("LoginButton"));
+
+    public event Action<LoginInputModel, string> OnAuthenticated;
+
+    public void GoTo()
     {
-        private readonly BrowserContext _browserContext;
+        browserContext.NavigateTo(PageUrl);
+    }
 
-        private const string PageUrl = "/Login";
-        private IWebElement Name => _browserContext.Driver.FindElement(By.Id("Name"));
-        private IWebElement Password => _browserContext.Driver.FindElement(By.Id("Password"));
-        private IWebElement LoginButton => _browserContext.Driver.FindElement(By.Id("LoginButton"));
-
-        public LoginPageDriver(BrowserContext browserContext)
-        {
-            _browserContext = browserContext;
-        }
-
-        public event Action<LoginInputModel, string> OnAuthenticated;
-
-        public void GoTo()
-        {
-            _browserContext.NavigateTo(PageUrl);
-        }
-
-        protected override string DoAction(LoginInputModel loginInput)
-        {
-            GoTo();
-            Name.SendKeys(loginInput.Name);
-            Password.SendKeys(loginInput.Password);
-            _browserContext.SubmitFormWith(LoginButton, true);
-            _browserContext.AssertNotOnPath(PageUrl);
-            OnAuthenticated?.Invoke(loginInput, loginInput.Name);
-            return loginInput.Name;
-        }
+    protected override string DoAction(LoginInputModel loginInput)
+    {
+        GoTo();
+        Name.SendKeys(loginInput.Name);
+        Password.SendKeys(loginInput.Password);
+        browserContext.SubmitFormWith(LoginButton, true);
+        browserContext.AssertNotOnPath(PageUrl);
+        OnAuthenticated?.Invoke(loginInput, loginInput.Name);
+        return loginInput.Name;
     }
 }

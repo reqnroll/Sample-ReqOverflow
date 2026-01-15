@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ReqOverflow.Specs.Controller/ReqOverflow.Specs.Controller.csproj" />
+  <Project Path="ReqOverflow.Tests/ReqOverflow.Tests.csproj" />
+  <Project Path="ReqOverflow.Web/ReqOverflow.Web.csproj" />
+</Solution>

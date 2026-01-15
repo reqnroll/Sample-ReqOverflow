@@ -1,46 +1,45 @@
 using System;
 using System.Threading;
 
-namespace ReqOverflow.Specs.WebUI.Support
+namespace ReqOverflow.Specs.WebUI.Support;
+
+/// <summary>
+/// Simple implementation of a busy-waiting strategy that waits for an assertion to succeed for a certain time.
+/// </summary>
+public static class Wait
 {
-    /// <summary>
-    /// Simple implementation of a busy-waiting strategy that waits for an assertion to succeed for a certain time.
-    /// </summary>
-    public static class Wait
+    private const int ACTIVE_WAIT_TIMEOUT_MSEC = 2000;
+    private const int ACTIVE_WAIT_POLL_PERIOD_MSEC = 100;
+
+    public static void For(Action action)
     {
-        private const int ACTIVE_WAIT_TIMEOUT_MSEC = 2000;
-        private const int ACTIVE_WAIT_POLL_PERIOD_MSEC = 100;
-
-        public static void For(Action action)
+        var waitUntil = DateTime.Now + TimeSpan.FromMilliseconds(ACTIVE_WAIT_TIMEOUT_MSEC);
+        while (true)
         {
-            var waitUntil = DateTime.Now + TimeSpan.FromMilliseconds(ACTIVE_WAIT_TIMEOUT_MSEC);
-            while (true)
+            try
             {
-                try
-                {
-                    action();
-                    return;
-                }
-                catch (Exception)
-                {
-                    if (DateTime.Now >= waitUntil)
-                        throw;
-                }
-                Thread.Sleep(ACTIVE_WAIT_POLL_PERIOD_MSEC);
+                action();
+                return;
             }
-        }
-
-        public static bool ForCondition(Func<bool> condition)
-        {
-            var waitUntil = DateTime.Now + TimeSpan.FromMilliseconds(ACTIVE_WAIT_TIMEOUT_MSEC);
-            while (true)
+            catch (Exception)
             {
-                if (condition())
-                    return true;
                 if (DateTime.Now >= waitUntil)
-                    return false;
-                Thread.Sleep(ACTIVE_WAIT_POLL_PERIOD_MSEC);
+                    throw;
             }
+            Thread.Sleep(ACTIVE_WAIT_POLL_PERIOD_MSEC);
+        }
+    }
+
+    public static bool ForCondition(Func<bool> condition)
+    {
+        var waitUntil = DateTime.Now + TimeSpan.FromMilliseconds(ACTIVE_WAIT_TIMEOUT_MSEC);
+        while (true)
+        {
+            if (condition())
+                return true;
+            if (DateTime.Now >= waitUntil)
+                return false;
+            Thread.Sleep(ACTIVE_WAIT_POLL_PERIOD_MSEC);
         }
     }
 }

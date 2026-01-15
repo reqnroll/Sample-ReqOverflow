@@ -1,30 +1,28 @@
-using System;
 using ReqOverflow.Specs.WebUI.Drivers;
 using ReqOverflow.Web.Models;
 
-namespace ReqOverflow.Specs.WebUI.Support
+namespace ReqOverflow.Specs.WebUI.Support;
+
+public class AuthContext
 {
-    public class AuthContext
+    private readonly LoginPageDriver _loginPageDriver;
+
+    public string LoggedInUserName { get; set; }
+
+    public bool IsLoggedIn => LoggedInUserName != null;
+
+    public AuthContext(LoginPageDriver loginPageDriver)
     {
-        private readonly LoginPageDriver _loginPageDriver;
+        _loginPageDriver = loginPageDriver;
 
-        public string LoggedInUserName { get; set; }
-
-        public bool IsLoggedIn => LoggedInUserName != null;
-
-        public AuthContext(LoginPageDriver loginPageDriver)
+        loginPageDriver.OnAuthenticated += (loginInput, _) =>
         {
-            _loginPageDriver = loginPageDriver;
+            LoggedInUserName = loginInput.Name;
+        };
+    }
 
-            loginPageDriver.OnAuthenticated += (loginInput, authToken) =>
-            {
-                LoggedInUserName = loginInput.Name;
-            };
-        }
-
-        public void Authenticate(string userName, string password)
-        {
-            _loginPageDriver.Perform(new LoginInputModel { Name = userName, Password = password });
-        }
+    public void Authenticate(string userName, string password)
+    {
+        _loginPageDriver.Perform(new LoginInputModel { Name = userName, Password = password });
     }
 }

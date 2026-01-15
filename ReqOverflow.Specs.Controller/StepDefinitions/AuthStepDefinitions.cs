@@ -1,57 +1,46 @@
-using System;
-using FluentAssertions;
+using AwesomeAssertions;
 using ReqOverflow.Web.Models;
 using ReqOverflow.Specs.Controller.Support;
 using ReqOverflow.Specs.Controller.Drivers;
 using ReqOverflow.Specs.Support;
 using Reqnroll;
 
-namespace ReqOverflow.Specs.Controller.StepDefinitions
+namespace ReqOverflow.Specs.Controller.StepDefinitions;
+
+[Binding]
+public class AuthStepDefinitions(AuthContext authContext, AuthDriver authDriver)
 {
-    [Binding]
-    public class AuthStepDefinitions
+    [Given("user Marvin is authenticated")]
+    [Given("the user is authenticated")]
+    public void GivenTheUserIsAuthenticated()
     {
-        private readonly AuthContext _authContext;
-        private readonly AuthDriver _authDriver;
+        authContext.Authenticate(DomainDefaults.UserName, DomainDefaults.UserPassword);
+    }
 
-        public AuthStepDefinitions(AuthContext authContext, AuthDriver authDriver)
-        {
-            _authContext = authContext;
-            _authDriver = authDriver;
-        }
+    [Given("the user is not authenticated")]
+    public void GivenTheUserIsNotAuthenticated()
+    {
+        authDriver.GetCurrentUser().Should().BeNull();
+    }
 
-        [Given("user Marvin is authenticated")]
-        [Given("the user is authenticated")]
-        public void GivenTheUserIsAuthenticated()
-        {
-            _authContext.Authenticate(DomainDefaults.UserName, DomainDefaults.UserPassword);
-        }
+    [When("the user attempts to log in with user name {string} and password {string}")]
+    public void WhenTheUserAttemptsToLogInWithUserNameAndPassword(string userName, string password)
+    {
+        authDriver.Login.Perform(
+            new LoginInputModel {Name = userName, Password = password}, true);
+    }
 
-        [Given("the user is not authenticated")]
-        public void GivenTheUserIsNotAuthenticated()
-        {
-            _authDriver.GetCurrentUser().Should().BeNull();
-        }
+    [Then("the login attempt should be successful")]
+    public void ThenTheLoginAttemptShouldBeSuccessful()
+    {
+        authDriver.Login.ShouldBeSuccessful();
+    }
 
-        [When("the user attempts to log in with user name {string} and password {string}")]
-        public void WhenTheUserAttemptsToLogInWithUserNameAndPassword(string userName, string password)
-        {
-            _authDriver.Login.Perform(
-                new LoginInputModel {Name = userName, Password = password}, true);
-        }
-
-        [Then("the login attempt should be successful")]
-        public void ThenTheLoginAttemptShouldBeSuccessful()
-        {
-            _authDriver.Login.ShouldBeSuccessful();
-        }
-
-        [Then("the user should be authenticated")]
-        public void ThenTheUserShouldBeAuthenticated()
-        {
-            var currentUser = _authDriver.GetCurrentUser();
-            currentUser.Should().NotBeNull();
-            currentUser.Name.Should().Be(_authDriver.Login.LastInput.Name);
-        }
+    [Then("the user should be authenticated")]
+    public void ThenTheUserShouldBeAuthenticated()
+    {
+        var currentUser = authDriver.GetCurrentUser();
+        currentUser.Should().NotBeNull();
+        currentUser.Name.Should().Be(authDriver.Login.LastInput.Name);
     }
 }

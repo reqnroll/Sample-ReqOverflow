@@ -6,58 +6,50 @@ using OpenQA.Selenium;
 using ReqOverflow.Specs.WebUI.Support;
 using ReqOverflow.Web.Models;
 
-namespace ReqOverflow.Specs.WebUI.Drivers
+namespace ReqOverflow.Specs.WebUI.Drivers;
+
+public class HomePageDriver(BrowserContext browserContext)
 {
-    public class HomePageDriver
+    private IWebElement MainMessageH1 => browserContext.Driver.FindElement(By.Id("MainMessage"));
+    private IWebElement LoggedInUserSpan => browserContext.Driver.FindElements(By.Id("LoggedInUser")).FirstOrDefault();
+    private ReadOnlyCollection<IWebElement> LatestQuestionDivs => browserContext.Driver.FindElements(By.CssSelector("#Questions .question-info"));
+
+    public void GoTo()
     {
-        private readonly BrowserContext _browserContext;
+        browserContext.NavigateTo("/", true);
+    }
 
-        private IWebElement MainMessageH1 => _browserContext.Driver.FindElement(By.Id("MainMessage"));
-        private IWebElement LoggedInUserSpan => _browserContext.Driver.FindElements(By.Id("LoggedInUser")).FirstOrDefault();
-        private ReadOnlyCollection<IWebElement> LatestQuestionDivs => _browserContext.Driver.FindElements(By.CssSelector("#Questions .question-info"));
-
-        public HomePageDriver(BrowserContext browserContext)
+    public HomePageModel GetHomePageModel()
+    {
+        GoTo();
+        return new HomePageModel
         {
-            _browserContext = browserContext;
-        }
+            MainMessage = MainMessageH1.Text,
+            UserName = LoggedInUserSpan?.Text,
+            LatestQuestions = ParseLatestQuestions().ToList()
+        };
+    }
 
-        public void GoTo()
-        {
-            _browserContext.NavigateTo("/", true);
-        }
+    public UserReferenceModel GetCurrentUser()
+    {
+        var userName = GetHomePageModel().UserName;
+        return string.IsNullOrWhiteSpace(userName) ? null : new() {Name = userName};
+    }
 
-        public HomePageModel GetHomePageModel()
+    private IEnumerable<QuestionSummaryModel> ParseLatestQuestions()
+    {
+        foreach (var latestQuestionDiv in LatestQuestionDivs.ToArray())
         {
-            GoTo();
-            return new HomePageModel
+            yield return new QuestionSummaryModel
             {
-                MainMessage = MainMessageH1.Text,
-                UserName = LoggedInUserSpan?.Text,
-                LatestQuestions = ParseLatestQuestions().ToList()
+                Id = Guid.Parse(latestQuestionDiv.GetAttribute("data-question-id") ?? "unknown"),
+                Title = latestQuestionDiv.FindElement(By.CssSelector(".question .body a")).Text,
+                Votes = int.Parse(latestQuestionDiv.FindElement(By.CssSelector(".votes")).Text),
+                Answers = int.Parse(latestQuestionDiv.FindElement(By.CssSelector(".answers")).Text),
+                Views = int.Parse(latestQuestionDiv.FindElement(By.CssSelector(".views")).Text),
+                AskedBy = new UserReferenceModel { Name = latestQuestionDiv.FindElement(By.CssSelector(".question .user-name")).Text },
+                AskedAt = DateTime.Parse(latestQuestionDiv.FindElement(By.CssSelector(".question .timestamp")).GetAttribute("data-time") ?? "unknown")
             };
-        }
-
-        public UserReferenceModel GetCurrentUser()
-        {
-            var userName = GetHomePageModel().UserName;
-            return string.IsNullOrWhiteSpace(userName) ? null : new() {Name = userName};
-        }
-
-        private IEnumerable<QuestionSummaryModel> ParseLatestQuestions()
-        {
-            foreach (var latestQuestionDiv in LatestQuestionDivs.ToArray())
-            {
-                yield return new QuestionSummaryModel
-                {
-                    Id = Guid.Parse(latestQuestionDiv.GetAttribute("data-question-id")),
-                    Title = latestQuestionDiv.FindElement(By.CssSelector(".question .body a")).Text,
-                    Votes = int.Parse(latestQuestionDiv.FindElement(By.CssSelector(".votes")).Text),
-                    Answers = int.Parse(latestQuestionDiv.FindElement(By.CssSelector(".answers")).Text),
-                    Views = int.Parse(latestQuestionDiv.FindElement(By.CssSelector(".views")).Text),
-                    AskedBy = new UserReferenceModel { Name = latestQuestionDiv.FindElement(By.CssSelector(".question .user-name")).Text },
-                    AskedAt = DateTime.Parse(latestQuestionDiv.FindElement(By.CssSelector(".question .timestamp")).GetAttribute("data-time"))
-                };
-            }
         }
     }
 }

@@ -6,27 +6,26 @@ using ReqOverflow.Web.DataAccess;
 using Reqnroll;
 
 // ReSharper disable once CheckNamespace
-namespace ReqOverflow.Specs.Support
+namespace ReqOverflow.Specs.Support;
+
+[Binding]
+public class DatabaseHooks
 {
-    [Binding]
-    public class DatabaseHooks
+    private readonly DataContext.IDataPersist _dataPersist = new DataContext.InMemoryPersist();
+
+    [BeforeScenario(Order = 100)]
+    public void ResetDatabaseToBaseline()
     {
-        private readonly DataContext.IDataPersist _dataPersist = new DataContext.InMemoryPersist();
-
-        [BeforeScenario(Order = 100)]
-        public void ResetDatabaseToBaseline()
-        {
-            // configure app to use in-memory database
-            DataContext.CreateDataPersist = () => _dataPersist;
+        // configure app to use in-memory database
+        DataContext.CreateDataPersist = () => _dataPersist;
             
-            ClearDatabase();
-            DomainDefaults.AddDefaultUsers();
-        }
+        ClearDatabase();
+        DomainDefaults.AddDefaultUsers();
+    }
 
-        private static void ClearDatabase()
-        {
-            var db = new DataContext();
-            db.TruncateTables();
-        }
+    private static void ClearDatabase()
+    {
+        var db = new DataContext();
+        db.TruncateTables();
     }
 }

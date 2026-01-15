@@ -1,36 +1,23 @@
-using System;
 using Reqnroll;
 
-namespace ReqOverflow.Specs.API.Support
+namespace ReqOverflow.Specs.API.Support;
+
+[Binding]
+public class WebApiHooks(WebApiContext webApiContext, TestFolders testFolders, ScenarioContext scenarioContext)
 {
-    [Binding]
-    public class WebApiHooks
+    [AfterScenario("@webapi")]
+    public void WriteLog()
     {
-        private readonly WebApiContext _webApiContext;
-        private readonly TestFolders _testFolders;
-        private readonly ScenarioContext _scenarioContext;
-
-        public WebApiHooks(WebApiContext webApiContext, TestFolders testFolders, ScenarioContext scenarioContext)
+        if (scenarioContext.TestError != null)
         {
-            _webApiContext = webApiContext;
-            _testFolders = testFolders;
-            _scenarioContext = scenarioContext;
+            var fileName = testFolders.GetScenarioSpecificFileName(".log");
+            webApiContext.SaveLog(testFolders.OutputFolder, fileName);
         }
+    }
 
-        [AfterScenario("@webapi")]
-        public void WriteLog()
-        {
-            if (_scenarioContext.TestError != null)
-            {
-                var fileName = _testFolders.GetScenarioSpecificFileName(".log");
-                _webApiContext.SaveLog(_testFolders.OutputFolder, fileName);
-            }
-        }
-
-        [AfterTestRun]
-        public static void StopApp()
-        {
-            AppHostingContext.StopApp();
-        }
+    [AfterTestRun]
+    public static void StopApp()
+    {
+        AppHostingContext.StopApp();
     }
 }

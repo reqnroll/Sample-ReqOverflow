@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".config/dotnet-tools.json" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="ReqOverflow.Specs.API/ReqOverflow.Specs.API.csproj" />
+  <Project Path="ReqOverflow.Specs.Controller/ReqOverflow.Specs.Controller.csproj" />
+  <Project Path="ReqOverflow.Specs.WebUI/ReqOverflow.Specs.WebUI.csproj" />
+  <Project Path="ReqOverflow.Tests/ReqOverflow.Tests.csproj" />
+  <Project Path="ReqOverflow.Web/ReqOverflow.Web.csproj" />
+</Solution>

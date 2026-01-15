@@ -2,28 +2,27 @@ using System;
 using ReqOverflow.Web.Models;
 
 // ReSharper disable once CheckNamespace
-namespace ReqOverflow.Specs.Support.Data
+namespace ReqOverflow.Specs.Support.Data;
+
+public class AnswerData
 {
-    public class AnswerData
-    {
-        public string Content { get; set; }
-        public int Votes { get; set; }
+    public string Content { get; set; }
+    public int Votes { get; set; }
 
-        public DateTime AnsweredAt { get; set; }
-        public string AnsweredBy { get; set; }
-    }
+    public DateTime AnsweredAt { get; set; }
+    public string AnsweredBy { get; set; }
+}
 
-    internal static class AnswerDataExtensions
+internal static class AnswerDataExtensions
+{
+    public static AnswerData ToAnswerData(this AnswerDetailModel answerModel)
     {
-        public static AnswerData ToAnswerData(this AnswerDetailModel answerModel)
+        return new()
         {
-            return new()
-            {
-                Content = answerModel.Content,
-                Votes = answerModel.Votes,
-                AnsweredAt = answerModel.AnsweredAt,
-                AnsweredBy = answerModel.AnsweredBy.Name
-            };
-        }
+            Content = answerModel.Content,
+            Votes = answerModel.Votes,
+            AnsweredAt = answerModel.AnsweredAt,
+            AnsweredBy = answerModel.AnsweredBy.Name
+        };
     }
 }

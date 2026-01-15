@@ -1,0 +1,9 @@
+[*.{asax,ascx,aspx,cs,cshtml,css,htm,html,js,json,jsx,master,razor,resjson,skin,ts,tsx,vb,xaml,xamlx,xoml}]
+indent_style=space
+indent_size=4
+tab_width=4
+
+[*.{appxmanifest,build,config,csproj,dbml,discomap,dtd,jsproj,lsproj,njsproj,nuspec,proj,props,resw,resx,StyleCop,targets,tasks,vbproj,xml,xsd,json}]
+indent_style=space
+indent_size=2
+tab_width=2
